@@ -19,6 +19,10 @@ export class HomeComponent implements OnInit{
   http = inject(HttpClient);
   users: any;
 
+  ngOnInit(): void {
+    this.getUsers();
+  }
+
   registerToggle(){
     this.registerMode = !this.registerMode;
   }
@@ -41,9 +45,5 @@ export class HomeComponent implements OnInit{
   cancelRegistermode(event:boolean){
     this.registerMode = event;
   }
-  ngOnInit(): void {
-    this.getUsers();
-  }
-
 
 }
