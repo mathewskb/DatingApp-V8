@@ -4,7 +4,7 @@ using API.Errors;
 
 namespace API.Middlewares;
 
-public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddleware> _logger, IHostEnvironment _env)
+public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddleware> logger, IHostEnvironment env)
 {
     public async Task InvokeAsync(HttpContext context)
     {
@@ -14,13 +14,13 @@ public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddlew
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex.Message);
+            logger.LogError(ex, ex.Message);
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            var response = _env.IsDevelopment()
-                    ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace?.ToString())
-                    : new ApiException(context.Response.StatusCode, ex.Message, "Internal Server Error");
+            var response = env.IsDevelopment()
+                ? new ApiException(context.Response.StatusCode, ex.Message, ex.StackTrace)
+                : new ApiException(context.Response.StatusCode, ex.Message, "Internal server error");
 
             var options = new JsonSerializerOptions
             {
@@ -28,6 +28,7 @@ public class ExceptionMiddleware(RequestDelegate _next, ILogger<ExceptionMiddlew
             };
 
             var json = JsonSerializer.Serialize(response, options);
+
             await context.Response.WriteAsync(json);
 
         }
