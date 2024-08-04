@@ -22,7 +22,7 @@ export class NavComponent {
   private toastr = inject(ToastrService)
 
   login() {
-    // console.log(this.model);
+    console.log(this.model);
     this.accountService.login(this.model).subscribe({
       next: (res) => {
         // console.log(res);
